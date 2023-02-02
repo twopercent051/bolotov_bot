@@ -14,11 +14,12 @@ import time
 
 async def user_greeting(message: Message):
     user_id = message.from_user.id
+    username = message.from_user.username
     user_info = await get_user_by_id_sql(user_id)
-    if user_info is None:
+    if user_info is None or user_info[14] == 'enable':
         # next_step_time = time.time() + 3600
         next_step_time = time.time() + 10
-        user_tuple = (user_id, 'how_it_work', next_step_time, 0)
+        user_tuple = (user_id, 'how_it_work', next_step_time, 0, username)
         await create_user_sql(user_tuple)
         msg_list = file_reader(f'greeting.txt')
         await sender_with_photo(msg_list, 'greeting_photo.txt', user_id)
@@ -27,6 +28,7 @@ async def user_greeting(message: Message):
 async def user_how_it_work(user_id):
     # next_step_time = time.time() + 3600
     next_step_time = time.time() + 10
+    await user_status_toggle_sql(user_id, 'disable')
     await update_next_step_sql(user_id, 'are_you_ready', next_step_time)
     msg_list = file_reader(f'how_it_work.txt')
     await sender_with_photo(msg_list, 'how_it_work_photo.txt', user_id)
@@ -312,6 +314,7 @@ async def user_week_feedback_finish(callback: CallbackQuery):
     if week_id == weeks_num[-1][0]:
         text = 'Вы успешно завершили курс'
         await update_next_step_sql(user_id, '', 0)
+        await user_status_toggle_sql(user_id, 'disable')
         await callback.message.answer(text)
     else:
         user_tz = await get_user_timezone_sql(user_id)

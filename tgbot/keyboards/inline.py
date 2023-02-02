@@ -10,7 +10,8 @@ def home_kb():
 
 def admin_mainmenu_kb():
     text_button = InlineKeyboardButton(text='🗓 Редактировать тексты', callback_data='texts')
-    keyboard = InlineKeyboardMarkup(row_width=1).add(text_button)
+    users_button = InlineKeyboardButton(text='🙋 Список пользователей', callback_data='users_list')
+    keyboard = InlineKeyboardMarkup(row_width=1).add(text_button, users_button)
     return keyboard
 
 
@@ -69,6 +70,12 @@ def admin_workout_text_kb():
     habit_button = InlineKeyboardButton(text='Полезный пост', callback_data='tr_habit')
     keyboard = InlineKeyboardMarkup(row_width=1).add(program_button, reminder_button, sup_pos_button, sup_neg_button,
                                                      habit_button, home_button)
+    return keyboard
+
+
+def admin_list_users_kb(user_id):
+    user_button = InlineKeyboardButton(text='❌ Сбросить', callback_data=f'reset:{user_id}')
+    keyboard = InlineKeyboardMarkup(row_width=1).add(user_button, home_button)
     return keyboard
 
 

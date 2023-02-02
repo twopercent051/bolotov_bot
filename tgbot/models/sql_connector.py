@@ -42,7 +42,9 @@ def sql_start():
                            drinking VARCHAR(100),
                            timezone INT,
                            week_id INT,
-                           workout_id INT);
+                           workout_id INT,
+                           username VARCHAR(40),
+                           status VARCHAR(20));
                            """)
             cursor.execute("""
                            CREATE TABLE IF NOT EXISTS feedbacks(
@@ -112,7 +114,7 @@ async def get_user_by_id_sql(user_id):
 
 async def create_user_sql(user_tuple):
     connection = connection_init()
-    query = 'INSERT INTO users (user_id, next_step, dtime_next_step, paid_for) VALUES (%s, %s, %s, %s);'
+    query = 'INSERT INTO users (user_id, next_step, dtime_next_step, paid_for, username) VALUES (%s, %s, %s, %s, %s);'
     query_tuple = user_tuple
     try:
         with connection.cursor() as cursor:
@@ -133,6 +135,18 @@ async def get_users_list_sql():
         connection.commit()
         connection.close()
         return result
+
+
+async def user_status_toggle_sql(user_id, status):
+    connection = connection_init()
+    query = 'UPDATE users SET status = (%s) WHERE user_id = (%s);'
+    query_tuple = (status, user_id)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(query, query_tuple)
+    finally:
+        connection.commit()
+        connection.close()
 
 
 async def update_next_step_sql(user_id, next_step, dtime_next_step):

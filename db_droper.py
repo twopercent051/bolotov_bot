@@ -22,7 +22,7 @@ def deleter():
     connection = connection_init(host, user, password, db_name)
     try:
         with connection.cursor() as cursor:
-            cursor.execute('DROP TABLE feedbacks')
+            # cursor.execute('DROP TABLE feedbacks')
             cursor.execute('DROP TABLE users')
             # cursor.execute('DROP TABLE weeks')
     finally:

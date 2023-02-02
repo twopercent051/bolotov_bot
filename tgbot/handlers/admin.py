@@ -171,6 +171,24 @@ async def template_workout(callback: CallbackQuery, state: FSMContext):
     await bot.answer_callback_query(callback.id)
 
 
+async def users_list(callback: CallbackQuery):
+    users_list = await get_users_list_sql()
+    main_text = 'Список пользователей:'
+    await callback.message.answer(main_text)
+    for user in users_list:
+        user_id = user[1]
+        username = user[13]
+        user_text = f'<b>{username}</b> || <i>[{user_id}]</i>'
+        kb = admin_list_users_kb(user_id)
+        await callback.message.answer(user_text, reply_markup=kb)
+    await bot.answer_callback_query(callback.id)
+
+
+async def user_reset(callback: CallbackQuery):
+    user_id = callback.data.split(':')[1]
+    await user_status_toggle_sql(user_id, 'enable')
+
+
 def register_admin(dp: Dispatcher):
     dp.register_message_handler(admin_start, commands=["start"], state="*", chat_id=admin_group)
     dp.register_message_handler(template_photo, content_types=['photo'], state='*', chat_id=admin_group)
@@ -193,6 +211,9 @@ def register_admin(dp: Dispatcher):
     dp.register_callback_query_handler(workout_menu, lambda x: x.data.split(':')[0] == 'week_tr', state='*',
                                        chat_id=admin_group)
     dp.register_callback_query_handler(template_workout, lambda x: x.data.split('_')[0] == 'tr', state='*',
+                                       chat_id=admin_group)
+    dp.register_callback_query_handler(users_list, lambda x: x.data == 'users_list', state='*', chat_id=admin_group)
+    dp.register_callback_query_handler(user_reset, lambda x: x.data.split(':')[0] == 'reset', state='*',
                                        chat_id=admin_group)
 
 
