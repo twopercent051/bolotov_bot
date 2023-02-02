@@ -17,8 +17,8 @@ async def user_greeting(message: Message):
     username = message.from_user.username
     user_info = await get_user_by_id_sql(user_id)
     if user_info is None or user_info[14] == 'enable':
-        # next_step_time = time.time() + 3600
-        next_step_time = time.time() + 10
+        next_step_time = time.time() + 3600
+        # next_step_time = time.time() + 10
         user_tuple = (user_id, 'how_it_work', next_step_time, 0, username)
         await create_user_sql(user_tuple)
         msg_list = file_reader(f'greeting.txt')
@@ -26,8 +26,8 @@ async def user_greeting(message: Message):
 
 
 async def user_how_it_work(user_id):
-    # next_step_time = time.time() + 3600
-    next_step_time = time.time() + 10
+    next_step_time = time.time() + 3600
+    # next_step_time = time.time() + 10
     await user_status_toggle_sql(user_id, 'disable')
     await update_next_step_sql(user_id, 'are_you_ready', next_step_time)
     msg_list = file_reader(f'how_it_work.txt')
@@ -37,16 +37,16 @@ async def user_how_it_work(user_id):
 async def are_you_ready(user_id):
     text = 'Вы готовы начать?'
     kb = user_are_you_ready_kb()
-    # next_step_time = time.time() + 3600 * 24
-    next_step_time = time.time() + 10
+    next_step_time = time.time() + 3600 * 24
+    # next_step_time = time.time() + 10
 
     await update_next_step_sql(user_id, 'heating', next_step_time)
     await bot.send_message(user_id, text, reply_markup=kb)
 
 
 async def user_heating_by_sched(user_id):
-    # next_step_time = time.time() + 3600 * 48
-    next_step_time = time.time() + 10
+    next_step_time = time.time() + 3600 * 48
+    # next_step_time = time.time() + 10
 
     await update_next_step_sql(user_id, 'heating', next_step_time)
     msg_list = file_reader(f'heating.txt')
@@ -57,8 +57,8 @@ async def user_heating_by_sched(user_id):
 
 
 async def user_heating_by_kb(callback: CallbackQuery):
-    # next_step_time = time.time() + 3600 * 48
-    next_step_time = time.time() + 10
+    next_step_time = time.time() + 3600 * 48
+    # next_step_time = time.time() + 10
 
     user_id = callback.from_user.id
     await update_next_step_sql(user_id, 'heating', next_step_time)
@@ -78,8 +78,8 @@ async def payment(callback: CallbackQuery):
 
 
 async def payment_finish(callback: CallbackQuery):
-    # next_step_time = time.time() + 3600
-    next_step_time = time.time() + 10
+    next_step_time = time.time() + 3600
+    # next_step_time = time.time() + 10
 
     paid_for_timestamp = time.time() + 3600 * 24 * 30
     user_id = callback.from_user.id
@@ -88,8 +88,8 @@ async def payment_finish(callback: CallbackQuery):
 
 
 async def user_what_i_need(user_id):
-    # next_step_time = time.time() + 3600
-    next_step_time = time.time() + 10
+    next_step_time = time.time() + 3600
+    # next_step_time = time.time() + 10
 
     await update_next_step_sql(user_id, 'intro_polling', next_step_time)
     msg_list = file_reader(f'what_i_need.txt')
